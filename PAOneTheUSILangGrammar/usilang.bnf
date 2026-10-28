@@ -1,0 +1,33 @@
+# PA 1: The USILang Grammar
+#
+# Write your complete BNF specification below. See the assignment,
+# Part B, for the full requirements.
+#
+# Format reference:
+#   <nonterminal> ::= <other_nonterminal> "literal" TERMINAL_CATEGORY | epsilon
+# - Nonterminals go in angle brackets: <program>
+# - Literal tokens go in quotes: "+" "(" "let"  -- either "let" (quoted) or
+#   the bare word LET works for the keyword; the harness matches a literal
+#   against both the token's type and its exact text.
+# - Lexical terminal categories (matched by type, not exact text) are bare
+#   uppercase words: NUMBER  IDENT
+# - Alternatives are separated by |
+# - An empty alternative is written as the word: epsilon
+# - IMPORTANT: do not write left-recursive rules like <expr> ::= <expr> "+" <term>
+#   -- see Part A, Question 1/2 for why, and use a right-recursive "tail"
+#   helper nonterminal instead (not required to be named any particular
+#   thing, and not one of the 7 nonterminals validate_bnf.py checks for
+#   by name -- but you'll need at least one to avoid left recursion).
+
+<program> ::= <statement> <program> | epsilon
+<statement> ::= <declaration> | <assignment>
+<declaration> ::= "let" IDENT "=" <expr> ";"
+<assignment> ::= IDENT "=" <expr> ";"
+
+<expr> ::= <term> <expr_tail>
+<expr_tail> ::= "+" <term> <expr_tail> | "-" <term> <expr_tail> | epsilon
+
+<term> ::= <factor> <term_tail>
+<term_tail> ::= "*" <factor> <term_tail> | "/" <factor> <term_tail> | epsilon
+
+<factor> ::= "-" <factor> | "(" <expr> ")" | IDENT | NUMBER
